@@ -1,59 +1,40 @@
-# Main file to run the breakout game
-# TODO Add code here
-
 #!/usr/bin/env python3
 
-import pygame as pg
-import random
+from components.paddle import Paddle
+from components.game import Game
+from components.ball import Ball
+from components.brick import Brick
 
-class Brick(pg.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pg.Surface( (100, 50) )
-        r = random.randint
-        self.image.fill( (r(0,254), r(0,254), r(0,254)) )
-        self.rect = self.image.get_rect()
-        #code used for randomly placing rectangle
-        #not what we want, but could be used to reference placing more bricks
-        #self.rect.x = random.randint(0,800)
-        #self.rect.y  = random.randint(0,600)
-
-class Game:
-    def __init__(self):
-        pg.init()
-        self.__running = False
-        self.screen = pg.display.set_mode ( (800, 600) )
-        self.clock = pg.time.Clock()
-        self.bricks = pg.sprite.Group()
-        
-    def run(self):
-        while self.__running:
-            events = pg.event.get()
-            for event in events:
-                    if event.type == pg.QUIT:
-                        self.__running = False
-                        pg.quit()
-                        exit()
-            #Take events
-			
-            #Update updateable objects
-            self.bricks.update()
-            #Redraw
-            self.screen.fill( (255, 255, 255) )
-            self.bricks.draw(self.screen)
-            pg.display.flip()
-            self.clock.tick(60)
-
-    def setRunning(self, running):
-        self.__running = running
-
-    def addBrick(self, brick):
-        self.bricks.add(brick)
-	
 def main():
-    game = Game()
-    one = Brick()
-    game.addBrick(one)
+    # define game data
+    width = 800
+    height = 600
+    brickWidth = 100
+    brickHeight = 50
+    numBricksX = 8
+    numBricksY = 5
+    paddleSpeed = 8 # pixels per cycle @ 60Hz
+
+    # validate data
+    if (width % brickWidth != 0):
+        raise Exception("Illegal brick width - game board width must be evenly divisible into bricks")
+    if (numBricksX * brickWidth > width):
+        raise Exception("Illegal brick width or X qty - number of bricks exceeds the game board width")
+    if (numBricksY * brickHeight > height - 200):
+        raise Exception("Illegal brick height or Y qty - number of bricks is to tall to be playable")
+
+    # create game
+    game = Game(width, height)
+    
+    # add bricks to the game
+    for i in range(0, numBricksX):
+        for j in range (0, numBricksY):
+            game.addBrick(Brick(i * brickWidth, j * brickHeight))
+
+    # add paddle
+    game.setPaddle(Paddle(width / 5, paddleSpeed))
+
+    # start game  
     game.setRunning(True)
     game.run()
 	
