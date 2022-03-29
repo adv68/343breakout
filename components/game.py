@@ -10,6 +10,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.bricks = pg.sprite.Group()
         self.paddle = pg.sprite.GroupSingle()
+        self.ball = pg.sprite.GroupSingle()
         
     def run(self):
         while self.__running:
@@ -24,10 +25,12 @@ class Game:
             #Update updateable objects
             self.bricks.update()
             self.paddle.update()
+            self.ball.update()
             #Redraw
             self.screen.fill( (255, 255, 255) )
             self.bricks.draw(self.screen)
             self.paddle.draw(self.screen)
+            self.ball.draw(self.screen)
             pg.display.flip()
             self.clock.tick(60)
 
@@ -39,3 +42,14 @@ class Game:
 
     def setPaddle(self, paddle):
         self.paddle.add(paddle)
+
+    def setBall(self, ball):
+        self.ball.add(ball)
+
+    #getter for bricks for the ball to use
+    def getBricks(self):
+        return self.bricks
+
+    #same as above but for paddle
+    def getPaddle(self):
+        return self.paddle

@@ -34,6 +34,15 @@ def main():
     # add paddle
     game.setPaddle(Paddle(width / 5, paddleSpeed))
 
+    # add ball
+    game.setBall(Ball())
+
+    # tell the ball who the bricks are with the getter
+    Ball.bricks = game.getBricks()
+
+    # same as above but for paddle
+    Ball.paddle = game.getPaddle()
+
     # start game  
     game.setRunning(True)
     game.run()
