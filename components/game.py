@@ -11,6 +11,7 @@ class Game:
         self.bricks = pg.sprite.Group()
         self.paddle = pg.sprite.GroupSingle()
         self.ball = pg.sprite.GroupSingle()
+        self.overlay = pg.sprite.GroupSingle()
         
     def run(self):
         while self.__running:
@@ -31,6 +32,7 @@ class Game:
             self.bricks.draw(self.screen)
             self.paddle.draw(self.screen)
             self.ball.draw(self.screen)
+            self.overlay.draw(self.screen)
             pg.display.flip()
             self.clock.tick(60)
 
@@ -45,6 +47,9 @@ class Game:
 
     def setBall(self, ball):
         self.ball.add(ball)
+
+    def setOverlay(self, overlay):
+        self.overlay.add(overlay)
 
     #getter for bricks for the ball to use
     def getBricks(self):
