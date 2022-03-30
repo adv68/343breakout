@@ -41,7 +41,7 @@ class Ball(pg.sprite.Sprite):
             pg.quit()
             exit()
             
-        #if ball touches top of screen, set y velocity negative
+        #if ball touches top of screen, set y velocity positive
         #sometimes the ball glitches past, so negation can loop it in the wall
         #manually setting the velocity is safer
         if self.rect.y <= 0:
