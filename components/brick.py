@@ -20,3 +20,14 @@ class Brick(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = xOffset
         self.rect.y  = yOffset
+
+    def damage(self):
+        #self.hitPoints = self.hitPoints - 25
+        self.hitPoints = self.hitPoints - 1000
+
+    def update(self):
+        super().update(self) 
+
+        if self.hitPoints <= 0:
+            self.kill()
+

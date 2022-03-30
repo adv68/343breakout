@@ -1,5 +1,7 @@
 import pygame as pg
 
+from components.brick import Brick;
+
 class Ball(pg.sprite.Sprite):
     def __init__(self):
         # initialize superclass
@@ -51,11 +53,16 @@ class Ball(pg.sprite.Sprite):
         #more collision logic for changing ball direction
         collisions = pg.sprite.spritecollide(self, Ball.bricks, False)
         if collisions:
+            for brick in collisions:
+                if type(brick) is Brick:
+                    brick.damage()
+
             self.velocity[0] = -self.velocity[0]
             self.velocity[1] = -self.velocity[1]
 
         collisions2 = pg.sprite.spritecollide(self, Ball.paddle, False)
         if collisions2:
-            self.velocity[0] = -self.velocity[0]
+            #should reverse direction on paddle
+            #self.velocity[0] = -self.velocity[0]
             self.velocity[1] = -self.velocity[1]
             
