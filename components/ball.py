@@ -41,14 +41,20 @@ class Ball(pg.sprite.Sprite):
             pg.quit()
             exit()
             
-        #if ball touches top of screen, negate y velocity
-        if self.rect.y < 0:
-            self.velocity[1] = -self.velocity[1]
+        #if ball touches top of screen, set y velocity negative
+        #sometimes the ball glitches past, so negation can loop it in the wall
+        #manually setting the velocity is safer
+        if self.rect.y <= 0:
+            self.velocity[1] = 3
 
-        #if ball touches left or right side of screen, negate x velocity
+        #if ball touches left side of screen, set x velocity positive
+        if self.rect.x <= 0:
+            self.velocity[0] = 3
+
+        #if ball touches right side of screen, set x velocity negative
         #790 for boundary is used because the ball is 10 pixels wide
-        if (self.rect.x <0 or self.rect.x >790):
-            self.velocity[0] = -self.velocity[0]
+        if self.rect.x >= 790:
+            self.velocity[0] = -3    
 
         #more collision logic for changing ball direction
         collisions = pg.sprite.spritecollide(self, Ball.bricks, False)
