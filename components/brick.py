@@ -21,13 +21,20 @@ class Brick(pg.sprite.Sprite):
         self.rect.x = xOffset
         self.rect.y  = yOffset
 
+        #load sound effects
+        self.brickHit = pg.mixer.Sound('./sfx/425725__moogy73__click04.wav')
+        self.brickDestroyed = pg.mixer.Sound('./sfx/pop.mp3')
+
     def damage(self):
         #self.hitPoints = self.hitPoints - 25
-        self.hitPoints = self.hitPoints - 1000
-
+        self.hitPoints = self.hitPoints - 200
+        if(self.hitPoints>0):
+           self.brickHit.play()
+           
     def update(self):
         super().update(self) 
 
         if self.hitPoints <= 0:
+            self.brickDestroyed.play()
             self.kill()
 

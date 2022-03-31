@@ -12,6 +12,9 @@ class Game:
         self.paddle = pg.sprite.GroupSingle()
         self.ball = pg.sprite.GroupSingle()
         self.overlay = pg.sprite.GroupSingle()
+        pg.mixer.music.set_volume(.3)
+        pg.mixer.music.load('./sfx/happy-14585.mp3')
+        pg.mixer.music.play(-1)
         
     def run(self):
         while self.__running:
