@@ -4,6 +4,7 @@ from components.paddle import Paddle
 from components.game import Game
 from components.ball import Ball
 from components.brick import Brick
+from components.overlay import Overlay
 
 def main():
     # define game data
@@ -36,6 +37,9 @@ def main():
 
     # add ball
     game.setBall(Ball())
+
+    #add overlay
+    game.setOverlay(Overlay())
 
     # tell the ball who the bricks are with the getter
     Ball.bricks = game.getBricks()
