@@ -15,6 +15,7 @@ def main():
     numBricksX = 8
     numBricksY = 5
     paddleSpeed = 8 # pixels per cycle @ 60Hz
+    ballSize = 9
 
     # validate data
     if (width % brickWidth != 0):
@@ -30,13 +31,13 @@ def main():
     # add bricks to the game
     for i in range(0, numBricksX):
         for j in range (0, numBricksY):
-            game.addBrick(Brick(i * brickWidth, j * brickHeight))
+            game.addBrick(Brick(brickWidth, brickHeight, i * brickWidth, j * brickHeight))
 
     # add paddle
     game.setPaddle(Paddle(width / 5, paddleSpeed))
 
     # add ball
-    game.setBall(Ball())
+    game.setBall(Ball(ballSize))
 
     #add overlay
     game.setOverlay(Overlay())
