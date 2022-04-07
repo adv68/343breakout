@@ -8,6 +8,10 @@ class Ball(pg.sprite.Sprite):
         # initialize superclass
         super().__init__()
 
+        #intialize lives and score
+        self.lives = 5
+        self.score = 0
+
         self.size = size
         self.image = pg.Surface( (size, size) )
         self.image.fill( (0, 0, 0) )
@@ -63,8 +67,14 @@ class Ball(pg.sprite.Sprite):
         #if the ball goes past the paddle, end the game
         #perhaps we should change to just updating the overlay
         if self.rect.y > 600:
-            pg.quit()
-            exit()
+            if self.lives > 0:
+                self.rect.x = 395
+                self.rect.y  = 300
+                self.velocity = [3,-3]
+                self.lives = self.lives - 1
+            if self.lives == 0:
+                pg.quit()
+                exit()
             
         #if ball touches top of screen, set y velocity positive
         #sometimes the ball glitches past, so negation can loop it in the wall
@@ -94,6 +104,8 @@ class Ball(pg.sprite.Sprite):
                 if type(brick) is Brick:
                     brick.damage()
                     self.setBrickCollisionNewVelocity(brick)
+                    #increase score by 10
+                    self.score = self.score + 10
 
             #self.velocity[0] = -self.velocity[0]
             #self.velocity[1] = -self.velocity[1]
