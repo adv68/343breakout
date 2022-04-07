@@ -32,12 +32,12 @@ class Ball(pg.sprite.Sprite):
         self.paddleOrWallHit = pg.mixer.Sound('./sfx/505613__bjoerissen__d85-conga-low-soft-bounce-1.wav')
 
     #setBricks tells the ball what bricks are out there
-    def setBricks(self, bricks):
-        self.bricks = bricks
+    #def setBricks(self, bricks):
+    #    self.bricks = bricks
 
     #same as above but for paddle
-    def setPaddle(self, paddle):
-        self.paddle = paddle
+    #def setPaddle(self, paddle):
+    #    self.paddle = paddle
 
     def getPosition(self):
         return (self.rect.x + (self.size / 2), self.rect.y + (self.size / 2))
