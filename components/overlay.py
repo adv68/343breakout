@@ -21,6 +21,13 @@ class Overlay(pg.sprite.Sprite):
 
     def update(self):
         super().update(self)
+        font = pg.font.Font(pg.font.get_default_font(), 16)
+        scoreAndLives = font.render('Lives: '+str(self.ball.sprite.lives)+'    Score: '+str(self.ball.sprite.score), True, (0,0,0), (255,255,255))
+        scoreAndLivesRect = scoreAndLives.get_rect()
+        scoreAndLivesRect.bottomleft = (25, 590)
+
+        self.image.blit(scoreAndLives, scoreAndLivesRect)
+        pg.display.update()
 
         #not sure how much code is necessary for this function
         #we might have to add bricks to this class like for collision and ball

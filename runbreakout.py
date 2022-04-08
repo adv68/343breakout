@@ -48,6 +48,9 @@ def main():
     # same as above but for paddle
     Ball.paddle = game.getPaddle()
 
+    #
+    Overlay.ball = game.getBall()
+
     # start game  
     game.setRunning(True)
     game.run()

@@ -30,6 +30,7 @@ class Game:
             self.bricks.update()
             self.paddle.update()
             self.ball.update()
+            self.overlay.update()
             #Redraw
             self.screen.fill( (255, 255, 255) )
             self.bricks.draw(self.screen)
@@ -61,3 +62,6 @@ class Game:
     #same as above but for paddle
     def getPaddle(self):
         return self.paddle
+
+    def getBall(self):
+        return self.ball
