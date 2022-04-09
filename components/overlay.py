@@ -23,7 +23,7 @@ class Overlay(pg.sprite.Sprite):
     def update(self):
         super().update(self)
         font = pg.font.Font(pg.font.get_default_font(), 16)
-        scoreAndLives = font.render('Lives: ' + str(self.stats.getLives()) + '    Score: ' + str(self.stats.getScore()), True, (0,0,0), (255,255,255))
+        scoreAndLives = font.render('Lives: ' + str(self.stats.getLives()) + '    Score: ' + str(self.stats.getScore()) + '  ', True, (0,0,0), (255,255,255))
         scoreAndLivesRect = scoreAndLives.get_rect()
         scoreAndLivesRect.bottomleft = (25, 590)
 

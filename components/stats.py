@@ -12,6 +12,9 @@ class Stats:
     def decrementLives(self):
         self._lives = self._lives - 1
 
+    def incrementLives(self):
+        self._lives = self._lives + 1
+
     def setScore(self, score):
         self._score = score
 

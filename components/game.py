@@ -16,12 +16,13 @@ class Game:
         self.clock = pg.time.Clock()
         
         self.bricks = pg.sprite.Group()
-        self.damagableBricks = pg.sprite.Group()
+        self.damageableBricks = pg.sprite.Group()
         self.balls = pg.sprite.Group()
         self.paddle = pg.sprite.GroupSingle()
         self.overlay = pg.sprite.GroupSingle()
 
         self.stats = Stats(5, 0)   
+        self.bonusBalls = 0
 
         self.paddle.add(Paddle(width / 5, 8))  
         self.overlay.add(Overlay(self.stats))
@@ -30,6 +31,9 @@ class Game:
         Ball.paddle = self.paddle
 
     def run(self, level):  
+        # if there are any remaining balls from the previous level, get rid of them
+        self.balls.empty()
+
         # set game start time to 5 seconds from now
         startTime = time() + 5
 
@@ -63,11 +67,16 @@ class Game:
                 pausedTxt = font.render('Paused', True, pg.Color(0, 0, 0))
                 self.screen.blit(pausedTxt, ((self.width - pausedTxt.get_width()) / 2, (self.height - pausedTxt.get_height()) / 2))
             else:
-                #Update updateable objects
+                # Update updateable objects
                 self.bricks.update()
                 self.paddle.update()
                 self.balls.update()
                 self.overlay.update()
+
+                # Check score to see if eligable for a bonus life
+                if self.stats.getScore() // 1000 > self.bonusBalls:
+                    self.bonusBalls = self.bonusBalls + 1
+                    self.stats.incrementLives()
 
                 # Check if we are out of lives
                 # If we are exit and return false
@@ -79,7 +88,9 @@ class Game:
                     self.balls.add(Ball(9, self.getStats()))
 
                 #check if any bricks still exist
-                if not self.damagableBricks:
+                if not self.damageableBricks:
+                    # clear out any non-damageable bricks
+                    self.damageableBricks.empty()
                     return True
 
                 #Redraw
@@ -131,7 +142,7 @@ class Game:
     def addBrick(self, brick):
         self.bricks.add(brick)
         if type(brick) is Brick:
-            self.damagableBricks.add(brick)
+            self.damageableBricks.add(brick)
 
     def setPaddle(self, paddle):
         self.paddle.add(paddle)
