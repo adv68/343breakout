@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#Developers: Alec DeVries, Alex Fang
 
 from components.game import Game
 from components.brick import Brick
