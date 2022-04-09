@@ -36,11 +36,8 @@ class Paddle(pg.sprite.Sprite):
         elif mouseX >= 800 - self.width / 2:
             mouseX = 800 - self.width / 2
 
-
         if abs(mouseX - self.getPosition()) >= self.speed:
             if mouseX < self.getPosition():
                 self.setPosition(self.getPosition() - self.speed)
             elif mouseX > self.getPosition():
                 self.setPosition(self.getPosition() + self.speed)
-
-        #self.setPosition(mouseX)

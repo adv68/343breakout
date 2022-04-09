@@ -1,16 +1,15 @@
-from turtle import pos, position
 import pygame as pg
 
 from components.brick import Brick;
+from random import randint;
 
 class Ball(pg.sprite.Sprite):
-    def __init__(self, size):
+    def __init__(self, size, stats):
         # initialize superclass
         super().__init__()
 
-        #intialize lives and score
-        self.lives = 5
-        self.score = 0
+        #intialize stats
+        self.stats = stats
 
         self.size = size
         self.image = pg.Surface( (size, size) )
@@ -18,26 +17,18 @@ class Ball(pg.sprite.Sprite):
         
         # center ball in the game board
         self.rect = self.image.get_rect()
-        self.rect.x = 395
-        self.rect.y  = 300
+        self.rect.x = randint(200, 600)
+        self.rect.y  = 500
 
         #set velocity to 3
-        self.velocity = [3,-3]
-
-        #collision logic, ball can see bricks and paddle initialized
-        self.bricks = None
-        self.paddle = None
+        dir = randint(0, 1)
+        if dir == 0:
+            self.velocity = [3, -3]
+        else:
+            self.velocity = [-3, -3]
 
         #load sound effects
         self.paddleOrWallHit = pg.mixer.Sound('./sfx/505613__bjoerissen__d85-conga-low-soft-bounce-1.wav')
-
-    #setBricks tells the ball what bricks are out there
-    #def setBricks(self, bricks):
-    #    self.bricks = bricks
-
-    #same as above but for paddle
-    #def setPaddle(self, paddle):
-    #    self.paddle = paddle
 
     def getPosition(self):
         return (self.rect.x + (self.size / 2), self.rect.y + (self.size / 2))
@@ -67,12 +58,12 @@ class Ball(pg.sprite.Sprite):
         #if the ball goes past the paddle, end the game
         #perhaps we should change to just updating the overlay
         if self.rect.y > 600:
-            if self.lives > 0:
-                self.rect.x = 395
-                self.rect.y  = 300
-                self.velocity = [3,-3]
-                self.lives = self.lives - 1
-            if self.lives == 0:
+            if self.stats.getLives() > 0:
+                self.kill()
+                self.stats.decrementLives()
+                return
+
+            if self.stats.getLives() <= 0:
                 pg.quit()
                 exit()
             
@@ -105,7 +96,7 @@ class Ball(pg.sprite.Sprite):
                     brick.damage()
                     self.setBrickCollisionNewVelocity(brick)
                     #increase score by 10
-                    self.score = self.score + 10
+                    self.stats.appendScore(10)
                 else:
                     self.setBrickCollisionNewVelocity(brick)
 

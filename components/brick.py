@@ -6,15 +6,15 @@ class Brick(pg.sprite.Sprite):
         # initialize superclass
         super().__init__()
 
-        self.image = pg.Surface( (width - 4, height - 4) )
+        self.image = pg.Surface( (width - 6, height - 6) )
         r = random.randint
         self.life = r(1, 25)
         self.image.fill(Brick.getColor(self.life))
 
         # offset rectangle in the game board
         self.rect = self.image.get_rect()
-        self.rect.x = xOffset + 2
-        self.rect.y  = yOffset + 2
+        self.rect.x = xOffset + 3
+        self.rect.y  = yOffset + 3
 
         #load sound effects
         self.brickHit = pg.mixer.Sound('./sfx/425725__moogy73__click04.wav')
