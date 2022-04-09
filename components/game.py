@@ -38,6 +38,7 @@ class Game:
             if not self.damagableBricks:
                 return
 
+            self.overlay.update()
             #Redraw
             self.screen.fill( (255, 255, 255) )
             self.bricks.draw(self.screen)
@@ -79,3 +80,6 @@ class Game:
     # release pygame resources
     def dispose(self):
         pg.quit()
+        
+    def getBall(self):
+        return self.ball
