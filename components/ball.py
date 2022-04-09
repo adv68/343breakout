@@ -106,6 +106,8 @@ class Ball(pg.sprite.Sprite):
                     self.setBrickCollisionNewVelocity(brick)
                     #increase score by 10
                     self.score = self.score + 10
+                else:
+                    self.setBrickCollisionNewVelocity(brick)
 
             #self.velocity[0] = -self.velocity[0]
             #self.velocity[1] = -self.velocity[1]

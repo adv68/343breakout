@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
+from random import randint, random
 from components.paddle import Paddle
 from components.game import Game
 from components.ball import Ball
 from components.brick import Brick
 from components.overlay import Overlay
+from components.bumper import Bumper
+from time import sleep
 
 def main():
     # define game data
@@ -29,9 +32,32 @@ def main():
     game = Game(width, height)
     
     # add bricks to the game
+    '''
     for i in range(0, numBricksX):
         for j in range (0, numBricksY):
             game.addBrick(Brick(brickWidth, brickHeight, i * brickWidth, j * brickHeight))
+    '''
+    #-------------------------------------------------------------
+    numBricks = 1
+    minWidth = 60
+    maxWidth = 150
+    widthOffset = 0
+    heightOffset = 0
+    while numBricks > 0:
+        if (widthOffset + maxWidth >= width):
+            game.addBrick(Brick(width - widthOffset, brickHeight, widthOffset, heightOffset))
+            heightOffset = heightOffset + brickHeight
+            widthOffset = 0
+        else: 
+            w = randint(minWidth, maxWidth)
+            b = randint(1, 2)
+            if b == 1:
+                game.addBrick(Brick(w, brickHeight, widthOffset, heightOffset))
+            else:
+                game.addBrick(Bumper(w, brickHeight, widthOffset, heightOffset))
+            widthOffset = widthOffset + w
+        numBricks = numBricks - 1
+    #-------------------------------------------------------------
 
     # add paddle
     game.setPaddle(Paddle(width / 5, paddleSpeed))
@@ -49,8 +75,20 @@ def main():
     Ball.paddle = game.getPaddle()
 
     # start game  
-    game.setRunning(True)
     game.run()
+    #game.dispose()
+    game.stop()
+
+    sleep(5)
+    game.addBrick(Brick(100, 100, 0, 0))
+    game.setPaddle(Paddle(width / 5, paddleSpeed))
+    game.setBall(Ball(ballSize))
+    game.setOverlay(Overlay())
+    Ball.bricks = game.getBricks()
+    Ball.paddle = game.getPaddle()
+    game.run()
+
+    game.dispose()
 	
 if __name__ == '__main__':
     main()
