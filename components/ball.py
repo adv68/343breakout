@@ -20,6 +20,9 @@ class Ball(pg.sprite.Sprite):
         self.rect.x = randint(200, 600)
         self.rect.y  = 500
 
+        self._paddleOffset = 0
+        self._paddleOffsetDir = True
+
         #set velocity to 3
         dir = randint(0, 1)
         if dir == 0:
@@ -71,13 +74,11 @@ class Ball(pg.sprite.Sprite):
         #sometimes the ball glitches past, so negation can loop it in the wall
         #manually setting the velocity is safer
         if self.rect.y <= 0:
-            #self.velocity[1] = 3
             self.velocity[1] = -self.velocity[1]
             self.paddleOrWallHit.play()
 
         #if ball touches left side of screen, set x velocity positive
         if self.rect.x <= 0:
-            #self.velocity[0] = 3
             self.velocity[0] = - self.velocity[0]
             self.paddleOrWallHit.play()
 
@@ -100,30 +101,36 @@ class Ball(pg.sprite.Sprite):
                 else:
                     self.setBrickCollisionNewVelocity(brick)
 
-            #self.velocity[0] = -self.velocity[0]
-            #self.velocity[1] = -self.velocity[1]
-
         collisions2 = pg.sprite.spritecollide(self, Ball.paddle, False)
         if collisions2:
+            # recalculate paddle offset
+            if self._paddleOffset < -8:
+                self._paddleOffsetDir = True
+            elif self._paddleOffset > 8:
+                self._paddleOffsetDir = False
+
+            if self._paddleOffsetDir:
+                self._paddleOffset = self._paddleOffset + 1
+            else:
+                self._paddleOffset = self._paddleOffset - 1
+
             #should reverse direction on paddle
-            #self.velocity[0] = -self.velocity[0]
             ballCenter = self.rect.x + 5
             reflectPoint = ballCenter - collisions2[0].getPosition()
-            if reflectPoint < -36:
+            if reflectPoint < -36 + self._paddleOffset:
                 self.velocity[0] = -3
                 self.velocity[1] = -3
-            elif reflectPoint < -6:
+            elif reflectPoint < -6 + self._paddleOffset:
                 self.velocity[0] = -1
                 self.velocity[1] = -4
-            elif reflectPoint < 6:
+            elif reflectPoint < 6 + self._paddleOffset:
                 self.velocity[0] = 0
                 self.velocity[1] = -4
-            elif reflectPoint < 36:
+            elif reflectPoint < 36 + self._paddleOffset:
                 self.velocity[0] = 1
                 self.velocity[1] = -4
             else:
                 self.velocity[0] = 3
                 self.velocity[1] = -3
-            #self.velocity[1] = -self.velocity[1]
             self.paddleOrWallHit.play()
             

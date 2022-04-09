@@ -8,6 +8,8 @@ from components.overlay import Overlay
 from time import time
 
 class Game:
+    """
+    """
     def __init__(self, width, height):
         pg.init()
         self.width = width
