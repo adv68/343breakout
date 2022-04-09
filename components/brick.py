@@ -2,14 +2,31 @@ import pygame as pg
 import random
 
 class Brick(pg.sprite.Sprite):
+    """ Brick class
+
+    The Brick class creates a brick that is damageable
+    The ball will bounce off of it and cause damage
+    """
     def __init__(self, width, height, xOffset, yOffset):
+        """ Constructor for the Bumper class
+
+        Creates a new Bumper which is descendent from pygame.sprite
+        
+        Arguments
+        width: bumper width in pixels
+        height: bumper height in pixels
+        xOffset: bumper offset in the X axis in pixels
+        yOffset: bumper offset in the Y axis in pixels
+        """
+
         # initialize superclass
         super().__init__()
 
+        # define image and set life and fill color randomly
         self.image = pg.Surface( (width - 4, height - 4) )
         r = random.randint
-        self.life = r(1, 25)
-        self.image.fill(Brick.getColor(self.life))
+        self._life = r(1, 25)
+        self.image.fill(Brick.getColor(self._life))
 
         # offset rectangle in the game board
         self.rect = self.image.get_rect()
@@ -21,22 +38,43 @@ class Brick(pg.sprite.Sprite):
         self.brickDestroyed = pg.mixer.Sound('./sfx/pop.mp3')    
 
     def damage(self):
+        """ Causes damage to the brick 
+        
+        The assignment specified 1 damage per hit but that seemed
+        a little overkill so it is set to 5. Set the damage to
+        whatever you prefer
+        """
         #self.life = self.life - 1
-        self.life = self.life - 5
-        if self.life > 0:
+        self._life = self._life - 5
+
+        # if not destroyed, play standard hit sound
+        if self._life > 0:
            self.brickHit.play()
            
     def update(self):
+        """ Sprite update method
+        
+        Updates the brick internal values in preparation for rerendering
+        """
         super().update(self) 
 
-        if self.life <= 0:
+        # if the brick is dead, destory it
+        if self._life <= 0:
             self.brickDestroyed.play()
             self.kill()
 
-        self.image.fill(Brick.getColor(self.life))
+        # reset the color according to its current life
+        self.image.fill(Brick.getColor(self._life))
 
     @staticmethod
     def getColor(index):
+        """Static Color Decoder 
+        
+        Color decoder for determining brick color according to life value
+
+        Arguments
+        index: the current life value (between 1 and 25)
+        """
         colors = {
             25: (126, 56, 96),
             24: (194, 38, 165),
@@ -64,5 +102,6 @@ class Brick(pg.sprite.Sprite):
             2:  (237, 53, 11),
             1:  (240, 10, 10)
         }
+        # return the color at the specified index
+        # if it doesnt exist return black (0, 0, 0)
         return colors.get(index, (0, 0, 0))
-

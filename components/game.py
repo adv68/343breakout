@@ -8,33 +8,65 @@ from components.overlay import Overlay
 from time import time
 
 class Game:
-    """
+    """ Game class
+
+    The game class creates a new pygame instance
+
+    The game class can be reused for levels and other things:
+
+    gameMessage displays a full screen message
+    run runs the game until all the game bricks are destroyed
+    showHelp displays the help screen
     """
     def __init__(self, width, height):
+        """ Constructor for Game class
+
+        Creates a new Game instance
+
+        Arguments
+        width: width of the game window in pixels
+        height: height of game window in pixels
+        """
+        # initialize pygame and create new window and clock
         pg.init()
-        self.width = width
-        self.height = height
+        self._width = width
+        self._height = height
         self.screen = pg.display.set_mode ( (width, height) )
         self.clock = pg.time.Clock()
         
-        self.bricks = pg.sprite.Group()
-        self.damageableBricks = pg.sprite.Group()
-        self.balls = pg.sprite.Group()
-        self.paddle = pg.sprite.GroupSingle()
-        self.overlay = pg.sprite.GroupSingle()
+        # define containers for the game components
+        self._bricks = pg.sprite.Group()
+        self._damageableBricks = pg.sprite.Group()
+        self._balls = pg.sprite.Group()
+        self._paddle = pg.sprite.GroupSingle()
+        self._overlay = pg.sprite.GroupSingle()
 
+        # create a new stats object
         self.stats = Stats(5, 0)   
         self.bonusBalls = 0
 
-        self.paddle.add(Paddle(width / 5, 8))  
-        self.overlay.add(Overlay(self.stats))
+        # add a new paddle and overlay to their containers
+        self._paddle.add(Paddle(width / 5, 8))  
+        self._overlay.add(Overlay(self.stats))
 
-        Ball.bricks = self.bricks
-        Ball.paddle = self.paddle
+        # define the Ball statics
+        # bricks and paddle so the ball can do its collision logic
+        Ball.bricks = self._bricks
+        Ball.paddle = self._paddle
 
     def run(self, level):  
+        """ Run game loop
+
+        The run loop runs the game until all the bricks are destroyed
+        For five seconds, the screen shows whatever is in level
+
+        Arguments
+        level: the level text to display
+
+        Returns false if the game is over or killed, true if we can proceed on
+        """
         # if there are any remaining balls from the previous level, get rid of them
-        self.balls.empty()
+        self._balls.empty()
 
         # set game start time to 5 seconds from now
         startTime = time() + 5
@@ -44,8 +76,10 @@ class Game:
         pg.mixer.music.load('./sfx/happy-14585.mp3')
         pg.mixer.music.play(-1)
 
+        # define paused as false
         paused = False
 
+        # forever unless we return
         while True:
             # loop through events
             events = pg.event.get()
@@ -53,8 +87,10 @@ class Game:
                 if event.type == pg.QUIT:
                     return False
                 elif event.type == pg.KEYDOWN:
+                    # 'b' creates new balls
                     if event.key == pg.K_b:
-                        self.balls.add(Ball(9, self.getStats()))
+                        self._balls.add(Ball(9, self.getStats()))
+                    # spacebar does pause/unpause
                     elif event.key == pg.K_SPACE:
                         paused = not paused
 
@@ -63,17 +99,19 @@ class Game:
                 self.screen.fill((0, 0, 0))
                 font = pg.font.Font(pg.font.get_default_font(), 48)
                 levelTxt = font.render(level, True, pg.Color(255, 255, 255))
-                self.screen.blit(levelTxt, ((self.width - levelTxt.get_width()) / 2, (self.height - levelTxt.get_height()) / 2))
+                self.screen.blit(levelTxt, ((self._width - levelTxt.get_width()) / 2, (self._height - levelTxt.get_height()) / 2))
+            # If paused, then freeze the screen
             elif paused:
                 font = pg.font.Font(pg.font.get_default_font(), 72)
                 pausedTxt = font.render('Paused', True, pg.Color(0, 0, 0))
-                self.screen.blit(pausedTxt, ((self.width - pausedTxt.get_width()) / 2, (self.height - pausedTxt.get_height()) / 2))
+                self.screen.blit(pausedTxt, ((self._width - pausedTxt.get_width()) / 2, (self._height - pausedTxt.get_height()) / 2))
+            # If playing and not paused
             else:
                 # Update updateable objects
-                self.bricks.update()
-                self.paddle.update()
-                self.balls.update()
-                self.overlay.update()
+                self._bricks.update()
+                self._paddle.update()
+                self._balls.update()
+                self._overlay.update()
 
                 # Check score to see if eligable for a bonus life
                 if self.stats.getScore() // 1000 > self.bonusBalls:
@@ -86,34 +124,48 @@ class Game:
                     return False
 
                 # If no balls exist, spawn another one
-                if not self.balls:
-                    self.balls.add(Ball(9, self.getStats()))
+                if not self._balls:
+                    self._balls.add(Ball(9, self.getStats()))
 
                 #check if any bricks still exist
-                if not self.damageableBricks:
+                if not self._damageableBricks:
                     # clear out any non-damageable bricks
-                    self.bricks.empty()
+                    self._bricks.empty()
                     return True
 
                 #Redraw
                 self.screen.fill((255, 255, 255))
-                self.bricks.draw(self.screen)
-                self.paddle.draw(self.screen)
-                self.balls.draw(self.screen)
-                self.overlay.draw(self.screen)
+                self._bricks.draw(self.screen)
+                self._paddle.draw(self.screen)
+                self._balls.draw(self.screen)
+                self._overlay.draw(self.screen)
 
+            # flip display and wait for clock
             pg.display.flip()
             self.clock.tick(60)
 
     def gameMessage(self, message, duration):
+        """ Display a game message
+
+        Displays a full screen message for x seconds
+
+        Arguments
+        message: the game message to display
+        duration: the amount of time in seconds for the message to show
+
+        Returns false if exited, true if expired on timeout
+        """
+
         # set message end time to specified seconds from now
         startTime = time() + duration
 
+        # draw message
         self.screen.fill((0, 0, 0))
         font = pg.font.Font(pg.font.get_default_font(), 48)
         levelTxt = font.render(message, True, pg.Color(255, 255, 255))
-        self.screen.blit(levelTxt, ((self.width - levelTxt.get_width()) / 2, (self.height - levelTxt.get_height()) / 2))
+        self.screen.blit(levelTxt, ((self._width - levelTxt.get_width()) / 2, (self._height - levelTxt.get_height()) / 2))
 
+        # loop until timeout
         while True:
             # loop through events
             events = pg.event.get()
@@ -123,12 +175,21 @@ class Game:
 
             # If the end time has passed then exit
             if time() > startTime:
-                return False
+                return True
 
+            # flip display and tick clock
             pg.display.flip()
             self.clock.tick(60)
 
     def showHelp(self):
+        """ Show help screen
+
+        Display the help screen
+        Whatever is defined in the directions dictionary will
+        b displayed
+
+        Returns false if cancelled, true if proceed
+        """
         directions = [
             'Welcome to Breakout!',
             '  Break all the bricks to move on to the next level.',
@@ -144,11 +205,13 @@ class Game:
             'Press ENTER to continue...'
         ]
 
+        # draw the Directions title
         self.screen.fill((0, 0, 0))
         font = pg.font.Font(pg.font.get_default_font(), 48)
         titleTxt = font.render('Directions', True, pg.Color(255, 255, 255))
         self.screen.blit(titleTxt, (30, 30))
 
+        # loop through the direction lines and draw them
         lineOffset = 100
         font = pg.font.Font(pg.font.get_default_font(), 24)
         for line in directions:
@@ -156,6 +219,7 @@ class Game:
             self.screen.blit(lineTxt, (30, lineOffset))
             lineOffset = lineOffset + 40
 
+        # run event loop until quit or proceed key
         while True:
             # loop through events
             events = pg.event.get()
@@ -169,29 +233,36 @@ class Game:
             pg.display.flip()
             self.clock.tick(60)
 
-    # release pygame resources
     def dispose(self):
+        """Dispose pygame resources"""
         pg.quit()
 
     def getStats(self):
+        """Get stats object"""
         return self.stats
 
     def getBricks(self):
-        return self.bricks
+        """Get bricks container"""
+        return self._bricks
     
     def getPaddle(self):
-        return self.paddle
+        """Get paddle container"""
+        return self._paddle
 
     def addBrick(self, brick):
-        self.bricks.add(brick)
+        """Add a brick to the bricks container"""
+        self._bricks.add(brick)
         if type(brick) is Brick:
-            self.damageableBricks.add(brick)
+            self._damageableBricks.add(brick)
 
     def setPaddle(self, paddle):
-        self.paddle.add(paddle)
+        """Set the paddle"""
+        self._paddle.add(paddle)
 
     def addBall(self, ball):
-        self.balls.add(ball)
+        """Add a ball"""
+        self._balls.add(ball)
 
     def setOverlay(self, overlay):
-        self.overlay.add(overlay)
+        """Set the overlay"""
+        self._overlay.add(overlay)
