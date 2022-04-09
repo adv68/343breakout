@@ -92,7 +92,7 @@ class Game:
                 #check if any bricks still exist
                 if not self.damageableBricks:
                     # clear out any non-damageable bricks
-                    self.damageableBricks.empty()
+                    self.bricks.empty()
                     return True
 
                 #Redraw
@@ -109,6 +109,11 @@ class Game:
         # set message end time to specified seconds from now
         startTime = time() + duration
 
+        self.screen.fill((0, 0, 0))
+        font = pg.font.Font(pg.font.get_default_font(), 48)
+        levelTxt = font.render(message, True, pg.Color(255, 255, 255))
+        self.screen.blit(levelTxt, ((self.width - levelTxt.get_width()) / 2, (self.height - levelTxt.get_height()) / 2))
+
         while True:
             # loop through events
             events = pg.event.get()
@@ -116,14 +121,50 @@ class Game:
                 if event.type == pg.QUIT:
                     return False
 
-            # If the end time hasn't passed
-            if time() < startTime:
-                self.screen.fill((0, 0, 0))
-                font = pg.font.Font(pg.font.get_default_font(), 48)
-                levelTxt = font.render(message, True, pg.Color(255, 255, 255))
-                self.screen.blit(levelTxt, ((self.width - levelTxt.get_width()) / 2, (self.height - levelTxt.get_height()) / 2))
-            else:
-                return True
+            # If the end time has passed then exit
+            if time() > startTime:
+                return False
+
+            pg.display.flip()
+            self.clock.tick(60)
+
+    def showHelp(self):
+        directions = [
+            'Welcome to Breakout!',
+            '  Break all the bricks to move on to the next level.',
+            '  The paddle is controlled by your mouse.',
+            '  Don\'t let the ball fall below your paddle or you will lose a life.',
+            '  Extra lives are awarded for every 1000 points.',
+            '  Black bricks are Bumpers - they are not damaged by hits', 
+            '    and you will have to work around them.',
+            '  Press \'B\' for extra balls. You are allowed as many as you like,',
+            '    but be warned, each ball that you lose counts as a life!',
+            '  Finally, press the spacebar to pause or unpause at any time.',
+            'Best of luck - get breakin!',
+            'Press ENTER to continue...'
+        ]
+
+        self.screen.fill((0, 0, 0))
+        font = pg.font.Font(pg.font.get_default_font(), 48)
+        titleTxt = font.render('Directions', True, pg.Color(255, 255, 255))
+        self.screen.blit(titleTxt, (30, 30))
+
+        lineOffset = 100
+        font = pg.font.Font(pg.font.get_default_font(), 24)
+        for line in directions:
+            lineTxt = font.render(line, True, pg.Color(255, 255, 255))
+            self.screen.blit(lineTxt, (30, lineOffset))
+            lineOffset = lineOffset + 40
+
+        while True:
+            # loop through events
+            events = pg.event.get()
+            for event in events:
+                if event.type == pg.QUIT:
+                    return False
+                elif event.type == pg.KEYDOWN:
+                    if event.key == pg.K_RETURN:
+                        return True
 
             pg.display.flip()
             self.clock.tick(60)
@@ -154,7 +195,3 @@ class Game:
 
     def setOverlay(self, overlay):
         self.overlay.add(overlay)
-
-    # release pygame resources
-    def dispose(self):
-        pg.quit()

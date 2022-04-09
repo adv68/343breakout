@@ -9,6 +9,12 @@ def main():
     # create game
     game = Game(800, 600)
 
+    # show help
+    # if the help screen returns false, then exit
+    if not game.showHelp():
+        game.dispose()
+        return
+    
     # define level 1 bricks
     for i in range(0, 8):
         for j in range (0, 5):
@@ -99,7 +105,7 @@ def main():
         game.gameMessage("Goodbye", 2)
         game.dispose()
         return
-
+    
     # define level 6 bricks
     for i in range(8, 0, -1):
         for j in range(0, i):
